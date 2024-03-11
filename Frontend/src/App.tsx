@@ -6,6 +6,7 @@ import TasksPage from './pages/TasksPage';
 import ActivitiesPage from './pages/ActivitiesPage';
 import AddTaskPage from './pages/AddTaskPage';
 import AddActivityPage from './pages/AddActivityPage';
+import StatisticsPage from './pages/StatisticsPage';
 
 // Import other pages
 
@@ -19,6 +20,7 @@ const App: React.FC = () => {
         <Route path="/activities" element={<ActivitiesPage />} />
         <Route path="/add-task" element={<AddTaskPage />} />
         <Route path="/add-activity" element={<AddActivityPage />} />
+        <Route path="/statistics" element={<StatisticsPage />} />
         {/* Define routes for other components or pages */}
       </Routes>
     </Router>

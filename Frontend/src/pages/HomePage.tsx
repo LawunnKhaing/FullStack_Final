@@ -8,7 +8,8 @@ const HomePage: React.FC = () => {
       <p>This is your go-to app for managing tasks and activities efficiently.</p>
       <div className="mt-4">
         <Link to="/tasks" className="btn btn-primary me-2">View Tasks</Link>
-        <Link to="/activities" className="btn btn-secondary">View Activities</Link>
+        <Link to="/activities" className="btn btn-primary me-2">View Activities</Link>
+        <Link to="/statistics" className="btn btn-primary me-2">View Statistics</Link>
       </div>
     </div>
   );
