@@ -17,3 +17,18 @@ export const addActivity = async (req, res) => {
     res.status(400).send(error.message);
   }
 };
+
+export const deleteActivity = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await Activity.destroy({
+      where: { id: id }
+    });
+    if (deleted) {
+      return res.status(204).send("Activity deleted");
+    }
+    throw new Error("Activity not found");
+  } catch (error) {
+    return res.status(500).send(error.message);
+  }
+};

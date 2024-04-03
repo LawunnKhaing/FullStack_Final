@@ -29,8 +29,16 @@ const ActivitiesPage: React.FC = () => {
   };
 
   const handleRemove = (id: number) => {
-    // Remove the activity with the given id
-    // You'll need to implement this function
+    if (window.confirm('Are you sure you want to delete this activity?')) {
+      // If the user clicked "OK", delete the activity.
+      axios.delete(`http://localhost:5000/api/activities/${id}`)
+        .then(response => {
+          console.log('Activity deleted successfully.', response.data);
+          // Remove the activity from the state.
+          setActivities(activities.filter(activity => activity.id !== id));
+        })
+        .catch(error => console.error(`Error: ${error}`));
+    }
   };
 
   const formatDate = (dateString: string): string => {
