@@ -1,27 +1,49 @@
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
-import {  useNavigate } from 'react-router-dom'; // Combine imports for cleanliness
 
-// Example activity data type
 interface Activity {
   id: number;
   title: string;
   description: string;
-  url?: string; // Removed since 'Learn more' link is no longer needed
+  url?: string;
+  createdAt: string;
 }
 
 const ActivitiesPage: React.FC = () => {
   const [activities, setActivities] = useState<Activity[]>([]);
   const navigate = useNavigate();
 
-  // Simulate fetching data from an API
+
   useEffect(() => {
-    // Placeholder for fetching activities data from an API
-    setActivities([
-      { id: 1, title: 'Hiking Trip', description: 'Exploring the mountains' },
-      { id: 2, title: 'Book Club', description: 'Discussing our latest read' },
-      // Add more activities here
-    ]);
+    axios.get('http://localhost:5000/api/activities')
+      .then(response => {
+        setActivities(response.data);
+      })
+      .catch(error => console.error(`Error: ${error}`));
   }, []);
+ 
+  const handleEdit = (id: number) => {
+    // Navigate to the edit page with the activity id
+    navigate(`/edit-activity/${id}`);
+  };
+
+  const handleRemove = (id: number) => {
+    // Remove the activity with the given id
+    // You'll need to implement this function
+  };
+
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${day}.${month}.${year} ${hours}:${minutes}`;
+  };
+
+  
 
   return (
     <div className="container mt-5">
@@ -31,12 +53,13 @@ const ActivitiesPage: React.FC = () => {
       </div>
       <div className="list-group">
         {activities.map(activity => (
-          <div key={activity.id} className="list-group-item list-group-item-action">
-            {/* Removed the Link component and use span with styles for text appearance */}
-            <div className="mb-2" style={{ color: 'black', textDecoration: 'none' }}>
-              <h5 className="mb-1">{activity.title}</h5>
-              <p className="mb-1">{activity.description}</p>
-            </div>
+          <div key={activity.id} className="list-group-item">
+            <h2>{activity.title}</h2>
+            <p>{activity.description}</p>
+            <p>URL: {activity.url}</p>
+            <p>Date Created: {formatDate(activity.createdAt)}</p>
+            <button style={{ marginRight: '10px' }} className="btn btn-primary" onClick={() => handleEdit(activity.id)}>Edit</button>
+            <button className="btn btn-danger" onClick={() => handleRemove(activity.id)}>Remove</button>
           </div>
         ))}
       </div>
