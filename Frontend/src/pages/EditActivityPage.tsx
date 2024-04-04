@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 
 interface Activity {
-  id: number;
+  id: string;
   title: string;
   description: string;
   url?: string;
@@ -18,27 +17,25 @@ const EditActivityPage: React.FC = () => {
   const [url, setUrl] = useState('');
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (id) {
-      fetchActivity(id);
-    }
-  }, [id]);
-
-  const fetchActivity = async (id: string) => {
+  const fetchActivity = useCallback(async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/activities/${id}`);
-      if (!response.ok) {
+      const res = await fetch(`http://localhost:5000/api/activities/${id}`);
+      if (!res.ok) {
         throw new Error('Failed to fetch activity');
       }
-      const activityData = await response.json();
-      setActivity(activityData);
-      setTitle(activityData.title);
-      setDescription(activityData.description);
-      setUrl(activityData.url || '');
+      const data = await res.json();
+      setActivity(data);
+      setTitle(data.title);
+      setDescription(data.description);
+      setUrl(data.url);
     } catch (error) {
       console.error('Error fetching activity:', error);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    fetchActivity();
+  }, [fetchActivity]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,39 +60,32 @@ const EditActivityPage: React.FC = () => {
         throw new Error('Failed to update activity');
       }
 
+      alert('The update was successful');
       navigate('/activities');
     } catch (error) {
       console.error('Error updating activity:', error);
     }
   };
 
-  if (!activity) return <div>Loading...</div>;
-
   return (
-    <Container className="mt-5">
-      <h1>Edit Activity</h1>
-      <Form onSubmit={handleSubmit}>
-        <Row className="mb-3">
-          <Form.Group as={Col} controlId="activityTitle">
-            <Form.Label>Title</Form.Label>
-            <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
-          </Form.Group>
-        </Row>
-        <Row className="mb-3">
-          <Form.Group as={Col} controlId="activityDescription">
-            <Form.Label>Description</Form.Label>
-            <Form.Control as="textarea" rows={3} value={description} onChange={(e) => setDescription(e.target.value)} required />
-          </Form.Group>
-        </Row>
-        <Row className="mb-3">
-          <Form.Group as={Col} controlId="activityUrl">
-            <Form.Label>URL (optional)</Form.Label>
-            <Form.Control type="url" value={url} onChange={(e) => setUrl(e.target.value)} />
-          </Form.Group>
-        </Row>
-        <Button variant="primary" type="submit">Update Activity</Button>
-      </Form>
-    </Container>
+    <div>
+      <h2>Edit Activity</h2>
+      <form onSubmit={handleSubmit}>
+        <label>
+          Title:
+          <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
+        </label>
+        <label>
+          Description:
+          <textarea value={description} onChange={(e) => setDescription(e.target.value)} required />
+        </label>
+        <label>
+          URL:
+          <input type="url" value={url} onChange={(e) => setUrl(e.target.value)} />
+        </label>
+        <button type="submit">Update Activity</button>
+      </form>
+    </div>
   );
 };
 

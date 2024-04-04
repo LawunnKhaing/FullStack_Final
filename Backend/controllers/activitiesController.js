@@ -45,3 +45,11 @@ export const deleteActivity = async (req, res) => {
     return res.status(500).send(error.message);
   }
 };
+  export const getActivityById = async (req, res) => {
+    try {
+      const activity = await Activity.findById(req.params.id);
+      res.json(activity);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+};
