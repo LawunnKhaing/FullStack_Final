@@ -8,6 +8,7 @@ interface Activity {
   description: string;
   url?: string;
   createdAt: string;
+  updatedAt: string;
 }
 
 const ActivitiesPage: React.FC = () => {
@@ -58,8 +59,11 @@ const ActivitiesPage: React.FC = () => {
           <div key={activity.id} className="list-group-item">
             <h2 className="mb-2">{activity.title}</h2>
             <p className="mb-1">{activity.description}</p>
+            <br />
             <p className="mb-1">URL: {activity.url}</p>
             <p className="mb-1">Date Created: {formatDate(activity.createdAt)}</p>
+            {activity.createdAt !== activity.updatedAt && <p className="mb-1"><em>Last Updated: {formatDate(activity.updatedAt)}</em></p>}
+            <br />
             <button className="btn btn-primary me-2" onClick={() => handleEdit(activity.id)}>Edit</button>
             <button className="btn btn-danger" onClick={() => handleRemove(activity.id)}>Remove</button>
           </div>

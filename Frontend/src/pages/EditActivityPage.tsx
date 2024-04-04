@@ -17,6 +17,10 @@ const EditActivityPage: React.FC = () => {
   const [url, setUrl] = useState('');
   const navigate = useNavigate();
 
+  useEffect(() => {
+    console.log(activity);
+  }, [activity])
+
   const fetchActivity = useCallback(async () => {
     try {
       const res = await fetch(`http://localhost:5000/api/activities/${id}`);
@@ -27,7 +31,7 @@ const EditActivityPage: React.FC = () => {
       setActivity(data);
       setTitle(data.title);
       setDescription(data.description);
-      setUrl(data.url);
+      setUrl(data.url || '');
     } catch (error) {
       console.error('Error fetching activity:', error);
     }
@@ -43,8 +47,7 @@ const EditActivityPage: React.FC = () => {
     const updatedActivity = {
       title,
       description,
-      url,
-      createdAt: activity?.createdAt || '',
+      url
     };
 
     try {
@@ -60,7 +63,7 @@ const EditActivityPage: React.FC = () => {
         throw new Error('Failed to update activity');
       }
 
-      alert('The update was successful');
+      alert('The activity was updated successfully.');
       navigate('/activities');
     } catch (error) {
       console.error('Error updating activity:', error);
@@ -68,22 +71,22 @@ const EditActivityPage: React.FC = () => {
   };
 
   return (
-    <div>
-      <h2>Edit Activity</h2>
+    <div className="container mt-5">
+      <h1>Edit Activity</h1>
       <form onSubmit={handleSubmit}>
-        <label>
-          Title:
-          <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
-        </label>
-        <label>
-          Description:
-          <textarea value={description} onChange={(e) => setDescription(e.target.value)} required />
-        </label>
-        <label>
-          URL:
-          <input type="url" value={url} onChange={(e) => setUrl(e.target.value)} />
-        </label>
-        <button type="submit">Update Activity</button>
+        <div className="mb-3">
+          <label htmlFor="activityTitle" className="form-label">Title</label>
+          <input type="text" className="form-control" id="activityTitle" value={title} onChange={(e) => setTitle(e.target.value)} required />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="activityDescription" className="form-label">Description</label>
+          <textarea className="form-control" id="activityDescription" rows={3} value={description} onChange={(e) => setDescription(e.target.value)} required></textarea>
+        </div>
+        <div className="mb-3">
+          <label htmlFor="activityUrl" className="form-label">URL (optional)</label>
+          <input type="url" className="form-control" id="activityUrl" value={url} onChange={(e) => setUrl(e.target.value)} />
+        </div>
+        <button type="submit" className="btn btn-primary">Update Activity</button>
       </form>
     </div>
   );

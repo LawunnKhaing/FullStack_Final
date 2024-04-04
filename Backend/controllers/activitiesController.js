@@ -46,10 +46,28 @@ export const deleteActivity = async (req, res) => {
   }
 };
   export const getActivityById = async (req, res) => {
-    try {
-      const activity = await Activity.findById(req.params.id);
-      res.json(activity);
-    } catch (err) {
-      res.status(500).json({ message: err.message });
+  try {
+    const activity = await Activity.findByPk(req.params.id);
+    if (!activity) {
+      return res.status(404).send("Activity not found");
     }
+    res.json(activity);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+export const updateActivity = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const [updated] = await Activity.update(req.body, {
+      where: { id: id }
+    });
+    if (updated) {
+      const updatedActivity = await Activity.findByPk(id);
+      return res.json(updatedActivity);
+    }
+    throw new Error("Activity not found");
+  } catch (error) {
+    return res.status(500).send(error.message);
+  }
 };
