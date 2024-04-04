@@ -9,6 +9,19 @@ export const getActivities = async (req, res) => {
   }
 };
 
+export const getActivity = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const activity = await Activity.findByPk(id);
+    if (!activity) {
+      return res.status(404).send("Activity not found");
+    }
+    res.json(activity);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+
 export const addActivity = async (req, res) => {
   try {
     const activity = await Activity.create(req.body);

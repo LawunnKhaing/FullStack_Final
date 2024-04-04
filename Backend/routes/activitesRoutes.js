@@ -3,7 +3,7 @@ import { getActivities, addActivity, deleteActivity } from '../controllers/activ
 
 const router = express.Router();
 
-router.get('/', getActivities);
+router.get('/', getActivities, getActivities);
 router.post('/', addActivity);
 router.delete('/:id', deleteActivity);
 

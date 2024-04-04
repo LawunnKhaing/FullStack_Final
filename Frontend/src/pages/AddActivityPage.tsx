@@ -4,20 +4,18 @@ import { useNavigate } from 'react-router-dom';
 const AddActivityPage: React.FC = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [url, setUrl] = useState(''); // Additional field for activity URL if applicable
+  const [url, setUrl] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Prepare the activity data
     const activityData = {
       title,
       description,
-      url, // Only include this if you're handling URLs in your backend
+      url,
     };
 
-    // Logic to add the activity via API call
     try {
       const response = await fetch('http://localhost:5000/api/activities', {
         method: 'POST',
@@ -31,11 +29,10 @@ const AddActivityPage: React.FC = () => {
         throw new Error('Failed to add activity');
       }
 
-      // Optionally, process the response data here
       const data = await response.json();
       console.log(data);
 
-      navigate('/activities'); // Navigate back to activities page after submission
+      navigate('/activities');
     } catch (error) {
       console.error("Error adding activity:", error);
     }

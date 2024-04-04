@@ -14,7 +14,6 @@ const ActivitiesPage: React.FC = () => {
   const [activities, setActivities] = useState<Activity[]>([]);
   const navigate = useNavigate();
 
-
   useEffect(() => {
     axios.get('http://localhost:5000/api/activities')
       .then(response => {
@@ -22,19 +21,16 @@ const ActivitiesPage: React.FC = () => {
       })
       .catch(error => console.error(`Error: ${error}`));
   }, []);
- 
+
   const handleEdit = (id: number) => {
-    // Navigate to the edit page with the activity id
     navigate(`/edit-activity/${id}`);
   };
 
   const handleRemove = (id: number) => {
     if (window.confirm('Are you sure you want to delete this activity?')) {
-      // If the user clicked "OK", delete the activity.
       axios.delete(`http://localhost:5000/api/activities/${id}`)
         .then(response => {
           console.log('Activity deleted successfully.', response.data);
-          // Remove the activity from the state.
           setActivities(activities.filter(activity => activity.id !== id));
         })
         .catch(error => console.error(`Error: ${error}`));
@@ -51,22 +47,20 @@ const ActivitiesPage: React.FC = () => {
     return `${day}.${month}.${year} ${hours}:${minutes}`;
   };
 
-  
-
   return (
     <div className="container mt-5">
-      <h1>Activities</h1>
+      <h1 className="mb-4">Activities</h1>
       <div className="d-flex justify-content-end mb-3">
         <button className="btn btn-success" onClick={() => navigate('/add-activity')}>Add New Activity</button>
       </div>
       <div className="list-group">
         {activities.map(activity => (
           <div key={activity.id} className="list-group-item">
-            <h2>{activity.title}</h2>
-            <p>{activity.description}</p>
-            <p>URL: {activity.url}</p>
-            <p>Date Created: {formatDate(activity.createdAt)}</p>
-            <button style={{ marginRight: '10px' }} className="btn btn-primary" onClick={() => handleEdit(activity.id)}>Edit</button>
+            <h2 className="mb-2">{activity.title}</h2>
+            <p className="mb-1">{activity.description}</p>
+            <p className="mb-1">URL: {activity.url}</p>
+            <p className="mb-1">Date Created: {formatDate(activity.createdAt)}</p>
+            <button className="btn btn-primary me-2" onClick={() => handleEdit(activity.id)}>Edit</button>
             <button className="btn btn-danger" onClick={() => handleRemove(activity.id)}>Remove</button>
           </div>
         ))}
