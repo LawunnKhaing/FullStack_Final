@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { Sequelize } from 'sequelize';
 import activitiesRouter from './routes/activitesRoutes.js';
+import tasksRouter from './routes/tasksRoutes.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -23,7 +24,7 @@ const sequelize = new Sequelize({
 sequelize
   .authenticate()
   .then(() => {
-    console.log('Connection has been established successfully.');
+    console.log('Connection to sequelize has been established successfully.');
   })
   .catch((err) => {
     console.error('Unable to connect to the database:', err);
@@ -32,6 +33,7 @@ sequelize
 app.use(cors());
 app.use(express.json());
 app.use('/api/activities', activitiesRouter);
+app.use('/api/tasks', tasksRouter);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);

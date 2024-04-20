@@ -27,11 +27,33 @@ const Activity = sequelize.define('Activity', {
   // Other model options go here
 });
 
+// Define your Task model
+const Task = sequelize.define('Task', {
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  description: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: false,
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    allowNull: false,
+  },
+}, {
+  // Other model options go here
+});
+
 // Function to establish database connection and synchronize models
 const connectAndSyncDb = async () => {
   try {
     await sequelize.authenticate(); // Try to authenticate with the database
-    console.log('Connection has been established successfully.');
+    console.log('Connection to the database has been established successfully.');
     await sequelize.sync(); // Synchronize all models with the database
     console.log('All models were synchronized successfully.');
   } catch (error) {
@@ -42,4 +64,4 @@ const connectAndSyncDb = async () => {
 // Execute the function to ensure the database is ready to be used
 connectAndSyncDb();
 
-export { sequelize, Activity };
+export { sequelize, Activity, Task };

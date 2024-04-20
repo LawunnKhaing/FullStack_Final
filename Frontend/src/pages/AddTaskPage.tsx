@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate instead of useHistory
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios'; // Import axios to make HTTP requests
 
 const AddTaskPage: React.FC = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const navigate = useNavigate(); // Use useNavigate hook here
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Logic to add the task (e.g., API call)
-    console.log({ name, description });
 
-    navigate('/tasks'); // Use navigate for redirection
+    // Make an API call to create a new task
+    await axios.post('http://localhost:5000/api/tasks', { name, description });
+
+    navigate('/tasks');
   };
 
   return (
