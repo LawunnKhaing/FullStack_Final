@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Make sure to include a fallback for the database URL in case it's not set in the .env file
-const sequelize = new Sequelize(process.env.DATABASE_URL || 'postgres://postgres:@localhost:5432/fullstack', {
+const sequelize = new Sequelize(process.env.DATABASE_URL || 'postgres://jessesillman@localhost:5432/fullstack', {
   dialect: 'postgres',
   logging: false, // Turn off logging or customize it as needed
 });
@@ -45,8 +45,19 @@ const Task = sequelize.define('Task', {
     type: DataTypes.DATE,
     allowNull: false,
   },
+  
+  //endDate: {
+    //type: DataTypes.DATE,
+    //allowNull: true,
+  //},
+  status: {
+    type: DataTypes.ENUM('in_progress', 'completed'),
+    allowNull: false,
+    defaultValue: 'in_progress',
+  },
 }, {
   // Other model options go here
+  
 });
 
 const getStats = async () => {
@@ -91,7 +102,8 @@ const connectAndSyncDb = async () => {
   try {
     await sequelize.authenticate(); // Try to authenticate with the database
     console.log('Connection to the database has been established successfully.');
-    await sequelize.sync(); // Synchronize all models with the database
+    await sequelize.sync({ alter: true }); // Synchronize all models with the database
+    console.log('Database & tables created!');
     console.log('All models were synchronized successfully.');
   } catch (error) {
     console.error('Unable to connect to the database:', error);

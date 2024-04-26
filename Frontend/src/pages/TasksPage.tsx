@@ -8,6 +8,10 @@ interface Task {
   description: string;
   createdAt: string;
   updatedAt: string;
+  startDate: string;
+  endDate: string;
+  status: string;
+
 }
 
 const TasksPage: React.FC = () => {
@@ -41,24 +45,47 @@ const TasksPage: React.FC = () => {
         .catch(error => console.error(`Error: ${error}`));
     }
   };
+
+  const handleMarkAsCompleted = (id: number) => {
+    axios.put(`http://localhost:5000/api/tasks/${id}`, { status: 'completed' })
+      .then(response => {
+        console.log('Task marked as completed successfully.', response.data);
+        setTasks(tasks.map(task => task.id === id ? { ...task, status: 'completed' } : task));
+      })
+      .catch(error => console.error(`Error: ${error}`));
+  };
+
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${day}.${month}.${year} ${hours}:${minutes}`;
+  };
   
 
   return (
     <div className="container mt-5">
       <h1>Tasks</h1>
       <div className="d-flex justify-content-end mb-3">
-        <button className="btn btn-success" onClick={() => navigate('/add-task')}>Add New Task</button>
+        <button className="btn btn-secondary" onClick={() => navigate('/add-task')}>Add New Task</button>
       </div>
       <div className="list-group">
         {tasks.map(task => (
           <div className="list-group-item" key={task.id}>
             <h5 className="mb-1">{task.name}</h5>
             <p className="mb-1">{task.description}</p>
-            <p className="mb-1">Date Created: {task.createdAt}</p>
-            {task.createdAt !== task.updatedAt && <p className="mb-1"><em>Last Updated: {task.updatedAt}</em></p>}
+            <p className="mb-1">Date Created: {formatDate(task.createdAt)}</p>
+            <p className="mb-1">Status: {task.status === 'completed' ? 'Completed' : 'In Progress'}</p>
+            {task.createdAt !== task.updatedAt && <p className="mb-1"><em>Last Updated: {formatDate(task.updatedAt)}</em></p>}
             <br />
             <button className="btn btn-primary me-2" onClick={() => handleEdit(task.id)}>Edit</button>
-            <button className="btn btn-danger" onClick={() => handleRemove(task.id)}>Remove</button>
+            <button className="btn btn-danger me-2" onClick={() => handleRemove(task.id)}>Remove</button>
+            {task.status === 'in_progress' && (
+              <button className="btn btn-success" onClick={() => handleMarkAsCompleted(task.id)}>Mark as Completed</button>
+            )}
           </div>
         ))}
       </div>

@@ -24,7 +24,17 @@ export const getTaskById = async (req, res) => {
 
 export const updateTask = async (req, res) => {
   const { id } = req.params;
-  await Task.update(req.body, { where: { id } });
-  const updatedTask = await Task.findByPk(id);
-  res.json(updatedTask);
+  const { status } = req.body;
+
+  try {
+    const task = await Task.findByPk(id);
+    if (task) {
+      await task.update({ status });
+      res.json(task);
+    } else {
+      res.status(404).json({ message: 'Task not found' });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
