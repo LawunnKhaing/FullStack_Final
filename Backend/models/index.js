@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Make sure to include a fallback for the database URL in case it's not set in the .env file
-const sequelize = new Sequelize(process.env.DATABASE_URL || 'postgres://jessesillman@localhost:5432/fullstack', {
+const sequelize = new Sequelize(process.env.DATABASE_URL || 'postgres://postgres@localhost:5432/fullstack', {
   dialect: 'postgres',
   logging: false, // Turn off logging or customize it as needed
 });
@@ -60,42 +60,6 @@ const Task = sequelize.define('Task', {
   
 });
 
-const getStats = async () => {
-  const activitiesCount = await Activity.count();
-  const tasksCount = await Task.count();
-
-  return {
-    activities: activitiesCount,
-    tasks: tasksCount,
-  };
-};
-
-// const getStats = async () => {
-//   const lastMonth = new Date();
-//   lastMonth.setMonth(lastMonth.getMonth() - 1);
-
-//   const activitiesCount = await Activity.count({
-//     where: {
-//       createdAt: {
-//         [Sequelize.Op.gte]: lastMonth
-//       }
-//     }
-//   });
-
-//   const tasksCount = await Task.count({
-//     where: {
-//       createdAt: {
-//         [Sequelize.Op.gte]: lastMonth
-//       }
-//     }
-//   });
-
-//   return {
-//     activities: activitiesCount,
-//     tasks: tasksCount,
-//   };
-// };
-
 
 // Function to establish database connection and synchronize models
 const connectAndSyncDb = async () => {
@@ -110,7 +74,23 @@ const connectAndSyncDb = async () => {
   }
 };
 
+const getStats = async () => {
+  try {
+    const activitiesCount = await Activity.count();
+    const tasksCount = await Task.count();
+    const completedTasksCount = await Task.count({ where: { status: 'completed' } });
+
+    return {
+      activities: activitiesCount,
+      tasks: tasksCount,
+      completedTasks: completedTasksCount,
+    };
+  } catch (error) {
+    console.error('Error fetching statistics:', error);
+    throw error;
+  }
+};
 // Execute the function to ensure the database is ready to be used
 connectAndSyncDb();
 
-export { sequelize, Activity, Task, getStats };
+export { sequelize, Activity, Task, getStats, connectAndSyncDb };

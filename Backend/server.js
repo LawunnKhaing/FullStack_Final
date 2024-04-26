@@ -3,7 +3,7 @@ import cors from 'cors';
 import { Sequelize } from 'sequelize';
 import activitiesRouter from './routes/activitesRoutes.js';
 import tasksRouter from './routes/tasksRoutes.js';
-import { getStats } from './models/index.js';
+import statisticRouter from './routes/statisticsRoutes.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -35,10 +35,8 @@ app.use(cors());
 app.use(express.json());
 app.use('/api/activities', activitiesRouter);
 app.use('/api/tasks', tasksRouter);
-app.get('/api/stats', async (req, res) => {
-  const stats = await getStats();
-  res.json(stats);
-});
+app.use('/api/stats', statisticRouter);
+
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
