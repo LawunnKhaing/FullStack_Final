@@ -3,7 +3,7 @@ import cors from 'cors';
 import { Sequelize } from 'sequelize';
 import activitiesRouter from './routes/activitesRoutes.js';
 import tasksRouter from './routes/tasksRoutes.js';
-import statisticRouter from './routes/statisticsRoutes.js';
+import statsRouter from './routes/statsRoutes.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -35,7 +35,7 @@ app.use(cors());
 app.use(express.json());
 app.use('/api/activities', activitiesRouter);
 app.use('/api/tasks', tasksRouter);
-app.use('/api/stats', statisticRouter);
+app.use('/api/stats', statsRouter);
 
 
 app.listen(port, () => {

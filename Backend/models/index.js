@@ -90,7 +90,5 @@ const getStats = async () => {
     throw error;
   }
 };
-// Execute the function to ensure the database is ready to be used
-connectAndSyncDb();
 
 export { sequelize, Activity, Task, getStats, connectAndSyncDb };

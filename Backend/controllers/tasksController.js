@@ -38,3 +38,9 @@ export const updateTask = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+export const getTasksByStatus = async (req, res) => {
+  const { status } = req.params;
+  const tasks = await Task.findAll({ where: { status } });
+  res.json(tasks);
+}

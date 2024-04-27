@@ -72,3 +72,11 @@ export const updateActivity = async (req, res) => {
   }
 };
 
+export const getActivitiesStats = async (req, res) => {
+  try {
+    const activitiesCount = await Activity.count();
+    res.json({ activities: activitiesCount });
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+}
