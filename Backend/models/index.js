@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Make sure to include a fallback for the database URL in case it's not set in the .env file
-const sequelize = new Sequelize(process.env.DATABASE_URL || 'postgres://postgres@localhost:5432/fullstack', {
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'postgres',
   logging: false, // Turn off logging or customize it as needed
 });
