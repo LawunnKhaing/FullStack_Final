@@ -25,6 +25,13 @@ export const getTaskById = async (req, res) => {
 export const updateTask = async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
+  const [updated] = await Task.update(req.body, {
+    where: { id: id }
+  });
+  if (updated) {
+    const updatedTask = await Task.findByPk(id);
+    return res.json(updatedTask);
+  }
 
   try {
     const task = await Task.findByPk(id);
@@ -38,6 +45,7 @@ export const updateTask = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 export const getTasksByStatus = async (req, res) => {
   const { status } = req.params;
