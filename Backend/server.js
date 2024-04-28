@@ -5,6 +5,11 @@ import activitiesRouter from './routes/activitesRoutes.js';
 import tasksRouter from './routes/tasksRoutes.js';
 import statsRouter from './routes/statsRoutes.js';
 import dotenv from 'dotenv';
+import { connectAndSyncDb } from './models/index.js';
+
+// ...
+
+connectAndSyncDb();
 
 dotenv.config();
 
@@ -25,8 +30,12 @@ const sequelize = new Sequelize({
 sequelize
   .authenticate()
   .then(() => {
-    console.log('Connection to sequelize has been established successfully.');
+    //console.log('Connection to sequelize has been established successfully.');
+    return sequelize.sync({ force: true });
   })
+  //.then(() => {
+   //console.log('Database & tables created!');
+  //})
   .catch((err) => {
     console.error('Unable to connect to the database:', err);
   });

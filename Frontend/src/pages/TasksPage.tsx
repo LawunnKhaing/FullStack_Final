@@ -11,6 +11,8 @@ interface Task {
   startDate: string;
   endDate: string;
   status: string;
+  tags: string;
+  activityId: number;
 
 }
 
@@ -47,10 +49,10 @@ const TasksPage: React.FC = () => {
   };
 
   const handleMarkAsCompleted = (id: number) => {
-    axios.put(`http://localhost:5000/api/tasks/${id}`, { status: 'completed' })
+    axios.put(`http://localhost:5000/api/tasks/${id}`, { status: 'completed', endDate: new Date().toISOString() })
       .then(response => {
         console.log('Task marked as completed successfully.', response.data);
-        setTasks(tasks.map(task => task.id === id ? { ...task, status: 'completed' } : task));
+        setTasks(tasks.map(task => task.id === id ? { ...task, status: 'completed', endDate: new Date().toISOString() } : task));
       })
       .catch(error => console.error(`Error: ${error}`));
   };
@@ -62,7 +64,7 @@ const TasksPage: React.FC = () => {
     const year = date.getFullYear();
     const hours = date.getHours().toString().padStart(2, '0');
     const minutes = date.getMinutes().toString().padStart(2, '0');
-    return `${day}.${month}.${year} ${hours}:${minutes}`;
+    return `${day}.${month}.${year}, ${hours}:${minutes}`;
   };
   
 
@@ -75,12 +77,16 @@ const TasksPage: React.FC = () => {
       <div className="list-group">
         {tasks.map(task => (
           <div className="list-group-item" key={task.id}>
-            <h5 className="mb-1">{task.name}</h5>
+            <div className="d-flex justify-content-between">
+              <h5 className="mb-1">{task.name}</h5>
+              {task.status === 'completed' ? <p className="mb-1"><strong>Completed: {formatDate(task.endDate)}</strong></p> : <p className="mb-1"><strong>In Progress</strong></p>}
+            </div>
             <p className="mb-1">{task.description}</p>
-            <p className="mb-1">Date Created: {formatDate(task.createdAt)}</p>
-            <p className="mb-1">Status: {task.status === 'completed' ? 'Completed' : 'In Progress'}</p>
-            {task.createdAt !== task.updatedAt && <p className="mb-1"><em>Last Updated: {formatDate(task.updatedAt)}</em></p>}
-            <br />
+            <br/>
+            <div className="d-flex">
+              <p className="mb-1 me-1">Date Created: {formatDate(task.createdAt)}</p>
+              {task.createdAt !== task.updatedAt && <p className="mb-1"><em>(Last Updated: {formatDate(task.updatedAt)})</em></p>}
+            </div>
             <button className="btn btn-primary me-2" onClick={() => handleEdit(task.id)}>Edit</button>
             <button className="btn btn-danger me-2" onClick={() => handleRemove(task.id)}>Remove</button>
             {task.status === 'in_progress' && (

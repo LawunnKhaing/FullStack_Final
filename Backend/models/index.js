@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Make sure to include a fallback for the database URL in case it's not set in the .env file
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
+const sequelize = new Sequelize(process.env.DATABASE_URL || 'postgres://jessesillman:@localhost:5432/fullstack', {
   dialect: 'postgres',
   logging: false, // Turn off logging or customize it as needed
 });
@@ -46,14 +46,14 @@ const Task = sequelize.define('Task', {
     allowNull: false,
   },
   
-  //endDate: {
-    //type: DataTypes.DATE,
-    //allowNull: true,
-  //},
   status: {
     type: DataTypes.ENUM('in_progress', 'completed'),
     allowNull: false,
     defaultValue: 'in_progress',
+  },
+  endDate: {
+    type: DataTypes.DATE,
+    allowNull: true,
   },
 }, {
   // Other model options go here

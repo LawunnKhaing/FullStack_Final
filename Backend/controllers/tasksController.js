@@ -25,25 +25,18 @@ export const getTaskById = async (req, res) => {
 export const updateTask = async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
-  const [updated] = await Task.update(req.body, {
+  let endDate;
+  if (status === 'completed') {
+    endDate = new Date();
+  }
+  const [updated] = await Task.update({ ...req.body, endDate }, {
     where: { id: id }
   });
   if (updated) {
     const updatedTask = await Task.findByPk(id);
     return res.json(updatedTask);
   }
-
-  try {
-    const task = await Task.findByPk(id);
-    if (task) {
-      await task.update({ status });
-      res.json(task);
-    } else {
-      res.status(404).json({ message: 'Task not found' });
-    }
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  res.status(404).json({ message: 'Task not found' });
 };
 
 
