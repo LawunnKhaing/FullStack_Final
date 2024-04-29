@@ -2,6 +2,11 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+interface Tag {
+  id: number;
+  name: string;
+}
+
 interface Task {
   id: number;
   name: string;
@@ -11,7 +16,7 @@ interface Task {
   startDate: string;
   endDate: string;
   status: string;
-  tags: string;
+  tags: Tag[];
   activityId: number;
 
 }
@@ -67,12 +72,12 @@ const TasksPage: React.FC = () => {
     return `${day}.${month}.${year}, ${hours}:${minutes}`;
   };
   
-
+  
   return (
     <div className="container mt-5">
       <h1>Tasks</h1>
       <div className="d-flex justify-content-end mb-3">
-        <button className="btn btn-secondary" onClick={() => navigate('/add-task')}>Add New Task</button>
+        <button className="btn btn-secondary" onClick={() => navigate('/add-task')}>Add a New Task</button>
       </div>
       <div className="list-group">
         {tasks.map(task => (
@@ -82,7 +87,10 @@ const TasksPage: React.FC = () => {
               {task.status === 'completed' ? <p className="mb-1"><strong>Completed: {formatDate(task.endDate)}</strong></p> : <p className="mb-1"><strong>In Progress</strong></p>}
             </div>
             <p className="mb-1">{task.description}</p>
-            <br/>
+            <p className="mb-1">
+              <br/>
+              Tags: {task.tags && task.tags.length > 0 ? task.tags.map(tag => tag.name).join(', ') : 'No Tags'}
+            </p>
             <div className="d-flex">
               <p className="mb-1 me-1">Date Created: {formatDate(task.createdAt)}</p>
               {task.createdAt !== task.updatedAt && <p className="mb-1"><em>(Last Updated: {formatDate(task.updatedAt)})</em></p>}

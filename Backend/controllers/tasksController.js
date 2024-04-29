@@ -1,13 +1,57 @@
-import { Task } from '../models/index.js';
+import { Task, Tag } from '../models/index.js';
 
 export const getTasks = async (req, res) => {
-  const tasks = await Task.findAll();
-  res.json(tasks);
+  try {
+    const tasks = await Task.findAll({
+      include: [
+        {
+          model: Tag,
+          as: 'Tags', // Use the same alias as in the association
+          through: { attributes: [] }, // This will skip the task-tag relation table fields
+        },
+      ],
+    });
+    res.json(tasks);
+  } catch (error) {
+    console.error('Error fetching tasks:', error);
+    res.status(500).send(error);
+  }
 };
 
+
 export const addTask = async (req, res) => {
-  const task = await Task.create(req.body);
-  res.status(201).json(task);
+  const { name, description, tags } = req.body;
+  try {
+    // Create a new task without tags
+    const task = await Task.create({ name, description });
+
+    // Handle tags if they are provided
+    if (tags && tags.length) {
+      // Find existing tags or create new ones and avoid duplicates
+      const tagsToAdd = await Promise.all(
+        tags.map(tagName =>
+          Tag.findOrCreate({
+            where: { name: tagName.trim() },
+            defaults: { name: tagName.trim() }
+          }).then(([tag]) => tag) // Destructure the findOrCreate response to get the tag instance
+        )
+      );
+
+      // Associate the found/created tags with the new task
+      await task.setTags(tagsToAdd);
+    }
+
+    // Fetch the newly created task with associated tags to return in the response
+    const returnTask = await Task.findByPk(task.id, {
+      include: [{ model: Tag, as: 'Tags' }]
+    });
+
+    // Return the created task along with its tags
+    res.status(201).json(returnTask);
+  } catch (error) {
+    console.error('Error creating task with tags:', error);
+    res.status(500).json({ message: 'Error creating task with tags', error: error.message });
+  }
 };
 
 export const deleteTask = async (req, res) => {
@@ -18,8 +62,19 @@ export const deleteTask = async (req, res) => {
 
 export const getTaskById = async (req, res) => {
   const { id } = req.params;
-  const task = await Task.findByPk(id);
-  res.json(task);
+  try {
+    const task = await Task.findByPk(id, {
+      include: [{
+        model: Tag,
+        as: 'Tags', // Again, ensure the alias matches
+        through: { attributes: [] }
+      }]
+    });
+    res.json(task);
+  } catch (error) {
+    console.error('Error fetching task by id:', error);
+    res.status(500).send(error);
+  }
 };
 
 export const updateTask = async (req, res) => {

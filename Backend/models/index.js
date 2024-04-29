@@ -60,6 +60,33 @@ const Task = sequelize.define('Task', {
   
 });
 
+const Tag = sequelize.define('Tag', {
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+});
+
+const TaskTag = sequelize.define('TaskTag', {
+  taskId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: Task,
+      key: 'id',
+    },
+  },
+  tagId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: Tag,
+      key: 'id',
+    },
+  },
+});
+
+Task.belongsToMany(Tag, { through: TaskTag, as: 'Tags' });
+Tag.belongsToMany(Task, { through: TaskTag, as: 'Tags' });
+
 
 // Function to establish database connection and synchronize models
 const connectAndSyncDb = async () => {
@@ -91,4 +118,4 @@ const getStats = async () => {
   }
 };
 
-export { sequelize, Activity, Task, getStats, connectAndSyncDb };
+export { sequelize, Activity, Task, Tag, TaskTag, getStats, connectAndSyncDb };

@@ -57,7 +57,7 @@ const ActivitiesPage: React.FC = () => {
     <div className="container mt-5">
       <h1 className="mb-4">Activities</h1>
       <div className="d-flex justify-content-end mb-3">
-        <button className="btn btn-secondary" onClick={() => navigate('/add-activity')}>Add New Activity</button>
+        <button className="btn btn-secondary" onClick={() => navigate('/add-activity')}>Add a New Activity</button>
       </div>
       <div className="list-group">
         {activities.map(activity => (

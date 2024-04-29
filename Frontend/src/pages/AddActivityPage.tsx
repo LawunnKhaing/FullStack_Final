@@ -40,7 +40,7 @@ const AddActivityPage: React.FC = () => {
 
   return (
     <div className="container mt-5">
-      <h1>Add New Activity</h1>
+      <h1>Add a New Activity</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="activityTitle" className="form-label">Title</label>
