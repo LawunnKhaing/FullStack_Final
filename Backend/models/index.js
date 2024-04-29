@@ -23,6 +23,25 @@ const Activity = sequelize.define('Activity', {
     type: DataTypes.STRING,
     allowNull: true, // Allows the URL to be optional
   },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: false,
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    allowNull: false,
+  },
+  status: {
+    type: DataTypes.ENUM('in_progress', 'completed'),
+    allowNull: false,
+    defaultValue: 'in_progress',
+  },
+  endDate: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
+
+
 }, {
   // Other model options go here
 });

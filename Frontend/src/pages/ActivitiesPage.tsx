@@ -43,6 +43,15 @@ const ActivitiesPage: React.FC = () => {
     }
   };
 
+  const handleMarkAsCompleted = (id: number) => {
+    axios.put(`http://localhost:5000/api/activities/${id}`, { status: 'completed', endDate: new Date().toISOString() })
+      .then(response => {
+        console.log('Activity marked as completed successfully.', response.data);
+        setActivities(activities.map(activity => activity.id === id ? { ...activity, status: 'completed', endDate: new Date().toISOString() } : activity));
+      })
+      .catch(error => console.error(`Error: ${error}`));
+  };
+
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
     const day = date.getDate().toString().padStart(2, '0');
@@ -62,15 +71,22 @@ const ActivitiesPage: React.FC = () => {
       <div className="list-group">
         {activities.map(activity => (
           <div key={activity.id} className="list-group-item">
-            <h2 className="mb-2">{activity.title}</h2>
+            <div className="d-flex justify-content-between">
+              <h5 className="mb-1">{activity.title}</h5>
+              {activity.status === 'completed' ? <p className="mb-1"><strong>Completed: {formatDate(activity.endDate)}</strong></p> : <p className="mb-1"><strong>In Progress</strong></p>}
+            </div>
             <p className="mb-1">{activity.description}</p>
             <br />
-            <p className="mb-1">URL: {activity.url}</p>
-            <p className="mb-1">Date Created: {formatDate(activity.createdAt)}</p>
-            {activity.createdAt !== activity.updatedAt && <p className="mb-1"><em>Last Updated: {formatDate(activity.updatedAt)}</em></p>}
-            <br />
+            {activity.url && <p className="mb-1">URL: {activity.url}</p>}
+            <div className="d-flex">
+              <p className="mb-1 me-1">Date Created: {formatDate(activity.createdAt)}</p>
+              {activity.createdAt !== activity.updatedAt && <p className="mb-1"><em>(Last Updated: {formatDate(activity.updatedAt)})</em></p>}
+            </div>
             <button className="btn btn-primary me-2" onClick={() => handleEdit(activity.id)}>Edit</button>
-            <button className="btn btn-danger" onClick={() => handleRemove(activity.id)}>Remove</button>
+            <button className="btn btn-danger me-2" onClick={() => handleRemove(activity.id)}>Remove</button>
+            {activity.status === 'in_progress' && (
+              <button className="btn btn-success" onClick={() => handleMarkAsCompleted(activity.id)}>Mark as Completed</button>
+            )}
           </div>
         ))}
       </div>

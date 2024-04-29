@@ -80,3 +80,9 @@ export const getActivitiesStats = async (req, res) => {
     res.status(500).send(error.message);
   }
 }
+
+export const getActivitiesByStatus = async (req, res) => {
+  const { status } = req.params;
+  const tasks = await Activity.findAll({ where: { status } });
+  res.json(tasks);
+}
