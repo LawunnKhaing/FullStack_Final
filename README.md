@@ -2,7 +2,7 @@
 Created by: Lawunn Khaing, Jesse Sillman, Huy Tran, Tran Truong (ITMI22SP)
 
 # Introduction
-Our final project for the FullStack course was to create an Activity/Task manager with the CRUD operations, utilizing a relational database for storage management. Additionally, the user can manage the status of each task, and see their progress on the statistics page.
+Our final project for the FullStack course was to create an Activity/Task manager with the CRUD operations, utilizing a relational database for storage management. Additionally, the user can manage the status of each task and activity, and see their progress on the statistics page.
 
 # Setting up your server (Backend)
 
