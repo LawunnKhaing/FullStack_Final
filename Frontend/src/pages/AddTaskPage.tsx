@@ -35,7 +35,7 @@ const AddTaskPage: React.FC = () => {
         </div>
         <div className="mb-3">
           <label htmlFor="taskTags" className="form-label">Tags</label>
-          <input type="text" className="form-control" id="taskTags" value={tags} onChange={e => setTags(e.target.value)} placeholder="Currently not working" />
+          <input type="text" className="form-control" id="taskTags" value={tags} onChange={e => setTags(e.target.value)} placeholder="Currently not working(?)" />
         </div>
         <button type="submit" className="btn btn-primary">Submit</button>
       </form>

@@ -29,12 +29,13 @@ const TasksPage: React.FC = () => {
     const fetchTasks = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/tasks');
+        //console.log("Received data:", response.data);  // Log the received data
         setTasks(response.data);
       } catch (error) {
         console.error('Error fetching tasks:', error);
       }
     };
-
+  
     fetchTasks();
   }, []);
 
@@ -43,7 +44,7 @@ const TasksPage: React.FC = () => {
   };
 
   const handleRemove = (id: number) => {
-    if (window.confirm('Are you sure you want to delete this activity?')) {
+    if (window.confirm('Are you sure you want to delete this task?')) {
       axios.delete(`http://localhost:5000/api/tasks/${id}`)
         .then(response => {
           console.log('Task deleted successfully.', response.data);
@@ -79,32 +80,42 @@ const TasksPage: React.FC = () => {
       <div className="d-flex justify-content-end mb-3">
         <button className="btn btn-secondary" onClick={() => navigate('/add-task')}>Add a New Task</button>
       </div>
-      <div className="list-group">
-        {tasks.map(task => (
-          <div className="list-group-item" key={task.id}>
-            <div className="d-flex justify-content-between">
-              <h5 className="mb-1">{task.name}</h5>
-              {task.status === 'completed' ? <p className="mb-1"><strong>Completed: {formatDate(task.endDate)}</strong></p> : <p className="mb-1"><strong>In Progress</strong></p>}
+      {tasks.map(task => (
+        <div key={task.id} className="card mb-3">
+          <div className="card-header d-flex justify-content-between align-items-center">
+            <h5 className="mb-0">{task.name}</h5>
+            <div>
+              {task.status === 'completed' ? 
+                <strong>Completed: {formatDate(task.endDate)}</strong> : 
+                <div className="text-right">
+                  <strong className="me-0">In Progress</strong>
+                </div>
+              }
             </div>
-            <p className="mb-1">{task.description}</p>
-            <p className="mb-1">
-              <br/>
+          </div>
+          <div className="card-body">
+            <p className="card-text">{task.description}</p>
+            <p className="card-text mb-1">  {/* Adjusted margin for closer alignment */}
               Tags: {task.tags && task.tags.length > 0 ? task.tags.map(tag => tag.name).join(', ') : 'No Tags'}
             </p>
-            <div className="d-flex">
+            <div className="d-flex align-items-center"> {/* Added align-items-center for vertical alignment */}
               <p className="mb-1 me-1">Date Created: {formatDate(task.createdAt)}</p>
-              {task.createdAt !== task.updatedAt && <p className="mb-1"><em>(Last Updated: {formatDate(task.updatedAt)})</em></p>}
+              {task.createdAt !== task.updatedAt && 
+                <p className="mb-1"><em>(Last Updated: {formatDate(task.updatedAt)})</em></p>}
             </div>
-            <button className="btn btn-primary me-2" onClick={() => handleEdit(task.id)}>Edit</button>
-            <button className="btn btn-danger me-2" onClick={() => handleRemove(task.id)}>Remove</button>
-            {task.status === 'in_progress' && (
-              <button className="btn btn-success" onClick={() => handleMarkAsCompleted(task.id)}>Mark as Completed</button>
-            )}
+            <div className="mt-2">
+              <button className="btn btn-primary me-2" onClick={() => handleEdit(task.id)}>Edit</button>
+              <button className="btn btn-danger me-2" onClick={() => handleRemove(task.id)}>Remove</button>
+              {task.status === 'in_progress' && (
+                <button className="btn btn-success" onClick={() => handleMarkAsCompleted(task.id)}>Mark as Completed</button>
+              )}
+            </div>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
+
 };
 
 export default TasksPage;

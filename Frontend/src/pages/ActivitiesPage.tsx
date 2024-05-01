@@ -59,7 +59,7 @@ const ActivitiesPage: React.FC = () => {
     const year = date.getFullYear();
     const hours = date.getHours().toString().padStart(2, '0');
     const minutes = date.getMinutes().toString().padStart(2, '0');
-    return `${day}.${month}.${year} ${hours}:${minutes}`;
+    return `${day}.${month}.${year}, ${hours}:${minutes}`;
   };
 
   return (
@@ -68,30 +68,38 @@ const ActivitiesPage: React.FC = () => {
       <div className="d-flex justify-content-end mb-3">
         <button className="btn btn-secondary" onClick={() => navigate('/add-activity')}>Add a New Activity</button>
       </div>
-      <div className="list-group">
-        {activities.map(activity => (
-          <div key={activity.id} className="list-group-item">
-            <div className="d-flex justify-content-between">
-              <h5 className="mb-1">{activity.title}</h5>
-              {activity.status === 'completed' ? <p className="mb-1"><strong>Completed: {formatDate(activity.endDate)}</strong></p> : <p className="mb-1"><strong>In Progress</strong></p>}
+      {activities.map(activity => (
+        <div key={activity.id} className="card mb-3">
+          <div className="card-header d-flex justify-content-between align-items-center">
+            <h5 className="mb-0">{activity.title}</h5>
+            <div>
+              {activity.status === 'completed' ? 
+                <strong>Completed: {formatDate(activity.endDate)}</strong> : 
+                <div className="text-right">
+                  <strong className="me-0">In Progress</strong>
+                </div>
+              }
             </div>
-            <p className="mb-1">{activity.description}</p>
-            <br />
-            {activity.url && <p className="mb-1">URL: {activity.url}</p>}
-            <div className="d-flex">
-              <p className="mb-1 me-1">Date Created: {formatDate(activity.createdAt)}</p>
-              {activity.createdAt !== activity.updatedAt && <p className="mb-1"><em>(Last Updated: {formatDate(activity.updatedAt)})</em></p>}
-            </div>
-            <button className="btn btn-primary me-2" onClick={() => handleEdit(activity.id)}>Edit</button>
-            <button className="btn btn-danger me-2" onClick={() => handleRemove(activity.id)}>Remove</button>
-            {activity.status === 'in_progress' && (
-              <button className="btn btn-success" onClick={() => handleMarkAsCompleted(activity.id)}>Mark as Completed</button>
-            )}
           </div>
-        ))}
-      </div>
+          <div className="card-body">
+            <p className="card-text">{activity.description}</p>
+            {activity.url && <p className="card-text mb-1">URL: {activity.url}</p>}
+            <div className="d-flex align-items-center">
+              <p className="mb-1 me-1">Date Created: {formatDate(activity.createdAt)}</p>
+              {activity.createdAt !== activity.updatedAt && 
+                <p className="mb-1"><em>(Last Updated: {formatDate(activity.updatedAt)})</em></p>}
+            </div>
+            <div>
+              <button className="btn btn-primary me-2" onClick={() => handleEdit(activity.id)}>Edit</button>
+              <button className="btn btn-danger me-2" onClick={() => handleRemove(activity.id)}>Remove</button>
+              <button className="btn btn-success" onClick={() => handleMarkAsCompleted(activity.id)}>Mark as Completed</button>
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
+
 };
 
 export default ActivitiesPage;

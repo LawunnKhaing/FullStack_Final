@@ -3,14 +3,13 @@ import { Task, Tag } from '../models/index.js';
 export const getTasks = async (req, res) => {
   try {
     const tasks = await Task.findAll({
-      include: [
-        {
-          model: Tag,
-          as: 'Tags', // Use the same alias as in the association
-          through: { attributes: [] }, // This will skip the task-tag relation table fields
-        },
-      ],
+      include: [{
+        model: Tag,
+        as: 'Tags',
+        through: { attributes: [] }
+      }],
     });
+    console.log("Tasks with tags:", tasks);  // Log the tasks with their tags
     res.json(tasks);
   } catch (error) {
     console.error('Error fetching tasks:', error);
@@ -19,12 +18,12 @@ export const getTasks = async (req, res) => {
 };
 
 
+
 export const addTask = async (req, res) => {
   const { name, description, tags } = req.body;
   try {
     // Create a new task without tags
     const task = await Task.create({ name, description });
-
     // Handle tags if they are provided
     if (tags && tags.length) {
       // Find existing tags or create new ones and avoid duplicates
