@@ -1,5 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+
+// Register the components used by ChartJS
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const StatisticsPage = () => {
   const [data, setData] = useState({ activities: 0, tasks: 0, completedTasks: 0 });
@@ -34,22 +45,36 @@ const StatisticsPage = () => {
 
   const chartOptions = {
     scales: {
-      yAxes: [
-        {
-          ticks: {
-            beginAtZero: true,
-          },
-        },
-      ],
+      y: {
+        beginAtZero: true,
+        min: 0
+      }
     },
+    plugins: {
+      legend: {
+        display: false
+      },
+      title: {
+        display: true,
+        text: 'Activity and Task Progression'
+      }
+    },
+    responsive: true,
+    maintainAspectRatio: false  // Adjusted to ensure responsiveness fits the container
+  };
+
+  // Inline styles for the chart container
+  const chartContainerStyle = {
+    width: '600px',  // Adjust width as necessary
+    height: '400px',  // Adjust height as necessary
+    padding: '10px'
   };
 
   return (
     <div className="container mt-5">
       <h1>Activities and Tasks Progression</h1>
       <div className="row">
-        <div className="col">
-          <h2>Charts for activities and tasks</h2>
+        <div className="col" style={chartContainerStyle}>
           <p>Here you can view the progress of your activities and tasks.</p>
           <Bar data={chartData} options={chartOptions} />
         </div>
