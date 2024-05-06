@@ -49,10 +49,11 @@ npm install
 npm run dev
 ```
 
-**Note!** The project is currently using the older version of Chart.js. In case the diagram in Statistics is not displayed, run the following command in terminal:
+**Note!** In case the diagram in the Statistics page is not displayed, run the following command in terminal:
 
 ```sh
-npm install --legacy-peer-deps react-chartjs-2@2.11.1 chart.js@2,9.4
+npm install chart.js@latest react-chartjs-2@latest
+
 ```
 
 
